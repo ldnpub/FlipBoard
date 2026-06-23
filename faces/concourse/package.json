@@ -1,0 +1,72 @@
+{
+  "name": "flipboard-concourse",
+  "author": "Rodolphe",
+  "version": "0.2.1",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard CONCOURSE",
+    "uuid": "35386df9-c364-46d8-a92c-d6f459d044ab",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_SEG22",
+          "file": "images/seg22.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_STEPS_RED",
+          "file": "images/steps_red.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_STEPS_ORANGE",
+          "file": "images/steps_orange.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_STEPS_YELLOW",
+          "file": "images/steps_yellow.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_STEPS_LGREEN",
+          "file": "images/steps_lgreen.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_STEPS_GREEN",
+          "file": "images/steps_green.png"
+        }
+      ]
+    },
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ]
+  }
+}

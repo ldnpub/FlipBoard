@@ -1,0 +1,53 @@
+{
+  "name": "flipboard-stipple",
+  "author": "Rodolphe",
+  "version": "0.2.3",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard STIPPLE",
+    "uuid": "5b7056f8-51ce-43fe-a776-1a1f7ce76124",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_DOTO_30",
+          "file": "fonts/Doto-900.ttf",
+          "characterRegex": "[0-9/%]"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_DOTO60",
+          "file": "images/doto60.png"
+        }
+      ]
+    },
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ]
+  }
+}

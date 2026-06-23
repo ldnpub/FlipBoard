@@ -1,0 +1,7 @@
+build/
+node_modules/
+package-lock.json
+*.pbw
+/pebble_screenshot_*.png
+.DS_Store
+.lock-waf_darwin_build

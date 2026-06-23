@@ -1,0 +1,52 @@
+{
+  "name": "flipboard-quai",
+  "author": "Rodolphe",
+  "version": "0.2.1",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard QUAI",
+    "uuid": "eb996ae0-c4ca-435c-bb28-9c82b50990b6",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GLYPHS46",
+          "file": "images/glyphs46.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GLYPHS24",
+          "file": "images/glyphs24.png"
+        }
+      ]
+    },
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ]
+  }
+}

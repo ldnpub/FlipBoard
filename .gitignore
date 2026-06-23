@@ -1,0 +1,12 @@
+build/
+node_modules/
+package-lock.json
+*.pbw
+/pebble_screenshot_*.png
+.DS_Store
+.lock-waf_darwin_build
+
+# Personal / non-redistributable assets (kept local, excluded from the public repo)
+install-howto.html
+design_handoff_pebble_watchfaces/reference/airport-board-reference.jpg
+design_handoff_pebble_watchfaces/reference/airport-board-reference-LICENSE.txt

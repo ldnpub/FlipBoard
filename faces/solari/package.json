@@ -1,0 +1,54 @@
+{
+  "name": "flipboard-solari",
+  "author": "Rodolphe",
+  "version": "0.2.1",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard SOLARI",
+    "uuid": "995de3d1-92ae-46d8-a0de-af2b62cba00d",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_SILK_44",
+          "file": "fonts/Silkscreen.ttf",
+          "characterRegex": "[0-9:]"
+        },
+        {
+          "type": "font",
+          "name": "FONT_SILK_24",
+          "file": "fonts/Silkscreen.ttf",
+          "characterRegex": "[0-9:/%]"
+        }
+      ]
+    },
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ]
+  }
+}

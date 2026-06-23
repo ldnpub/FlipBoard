@@ -1,0 +1,59 @@
+{
+  "name": "flipboard-apollo",
+  "author": "Rodolphe",
+  "version": "0.2.1",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard APOLLO",
+    "uuid": "fc20bca4-8545-4b5a-ae3f-e40ecaa49e77",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_VT_36",
+          "file": "fonts/VT323.ttf",
+          "characterRegex": "[0-9]"
+        },
+        {
+          "type": "font",
+          "name": "FONT_VT_28",
+          "file": "fonts/VT323.ttf",
+          "characterRegex": "[A-Za-z0-9:/%. >-]"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_VT68",
+          "file": "images/vt68.png"
+        }
+      ]
+    },
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "flipboard-ivoire",
+  "author": "Rodolphe",
+  "version": "0.3.0",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": false,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard IVOIRE",
+    "uuid": "bb1f122d-5e45-44fe-a1d6-1695c392cb2e",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL"
+    ],
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_OSWALD_28",
+          "file": "fonts/Oswald-600.ttf",
+          "characterRegex": "[0-9/% ]"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_OSW52",
+          "file": "images/osw52.png"
+        }
+      ]
+    }
+  }
+}

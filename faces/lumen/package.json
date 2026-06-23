@@ -1,0 +1,43 @@
+{
+  "name": "flipboard-lumen",
+  "author": "Rodolphe",
+  "version": "0.1.0",
+  "keywords": [
+    "pebble-app",
+    "watchface"
+  ],
+  "private": true,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "FlipBoard LUMEN",
+    "uuid": "2b65bbc1-1f71-4bd9-9b21-ffe35ed4d78b",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "messageKeys": [
+      "LANG",
+      "STEP_GOAL",
+      "GRID"
+    ],
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "health"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "menuIcon": true,
+          "file": "images/menu_icon.png"
+        }
+      ]
+    }
+  }
+}

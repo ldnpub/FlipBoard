@@ -1,6 +1,24 @@
 // FlipBoard IVOIRE — phone side. Clay renders the settings page and, on save,
-// auto-sends each item's value to the watch keyed by its messageKey
-// (LANG, STEP_GOAL). The C side (flipboard.h s_flip_inbox) applies them.
+// auto-sends each value to the watch keyed by its messageKey. The custom theme
+// function recolours Clay's accent to this face's colour (warm gold — ivory + ink).
 var Clay = require('pebble-clay');
 var clayConfig = require('./config');
-new Clay(clayConfig);
+
+// Injected into the config page (Clay stringifies this), so it must be
+// self-contained: no require/closures. Recolours the accent on AFTER_BUILD.
+function flipboardTheme(minified) {
+  var ACCENT = '#b8893a';
+  this.on(this.EVENTS.AFTER_BUILD, function () {
+    var css =
+      'strong{color:' + ACCENT + ' !important}' +
+      '.button.primary,.button[type=submit],button.primary,button[type=submit]' +
+      '{background-color:' + ACCENT + ' !important;-webkit-tap-highlight-color:' + ACCENT + '}' +
+      'input[type=range]{accent-color:' + ACCENT + '}';
+    var s = document.createElement('style');
+    s.type = 'text/css';
+    s.appendChild(document.createTextNode(css));
+    document.head.appendChild(s);
+  });
+}
+
+new Clay(clayConfig, flipboardTheme);

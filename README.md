@@ -8,7 +8,7 @@
 
 ![platform](https://img.shields.io/badge/platform-Pebble%20Time%202%20(Emery)-orange)
 ![display](https://img.shields.io/badge/display-200×228%20e--paper-lightgrey)
-![license](https://img.shields.io/badge/license-MIT-blue)
+![license](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)
 
 <br>
 
@@ -98,4 +98,4 @@ Phone settings use [Clay](https://github.com/pebble-dev/clay). Built for the Peb
 
 ## License
 
-[MIT](LICENSE) — do what you like, attribution appreciated. Bundled fonts keep their own OFL terms.
+[PolyForm Noncommercial 1.0.0](LICENSE) — free to use, modify and share for any **noncommercial** purpose; **selling is not permitted**. Bundled fonts keep their own OFL terms.

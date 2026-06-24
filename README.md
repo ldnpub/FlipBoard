@@ -4,7 +4,7 @@
 
 ### A family of departure-board watchfaces for the Pebble Time 2
 
-*Split-flap, dot-matrix, segment and LED takes on the airport/train board — one shared engine, seven faces.*
+*Split-flap, dot-matrix, segment and LED takes on the airport/train board — seven faces, one departure-board idea.*
 
 ![platform](https://img.shields.io/badge/platform-Pebble%20Time%202%20(Emery)-orange)
 ![display](https://img.shields.io/badge/display-200×228%20e--paper-lightgrey)
@@ -23,7 +23,7 @@
 
 ## The faces
 
-Each face is its own `.pbw` (its own Pebble Store app) but shares a common engine, data model and step-goal colour ramp. The departure-board idea, seven ways:
+Each face is its own `.pbw` (its own Pebble Store app). Six of them share a common engine, data model and step-goal colour ramp; **LUMEN** (`v0.1`) is an independent rebuild on the same ideas. The departure-board idea, seven ways:
 
 <table>
 <tr>
@@ -38,9 +38,23 @@ Each face is its own `.pbw` (its own Pebble Store app) but shares a common engin
 </tr>
 <tr>
 <td align="center"><img src="screenshots/lumen.png" width="160" alt="LUMEN"><br><b>LUMEN</b><br><sub>LED dot-matrix departure board · <code>v0.1</code></sub></td>
-<td colspan="2" valign="middle"><sub>Every face shows the same four zones — <b>steps</b>, <b>time</b>, <b>date</b>, <b>battery</b> — laid out in its own typographic world. The hero time runs a brief split-flap fold on the minute change, then stops (negligible battery cost).</sub></td>
+<td colspan="2" valign="middle"><sub>Every face shows the same four zones — <b>steps</b>, <b>time</b>, <b>date</b>, <b>battery</b> — laid out in its own typographic world. On most faces the hero time runs a brief split-flap fold on the minute change, then stops (negligible battery cost).</sub></td>
 </tr>
 </table>
+
+## On the Pebble appstore
+
+All seven are published (BETA) on the [rePebble](https://repebble.com) appstore:
+
+| Face | Page |
+|------|------|
+| STIPPLE | <https://apps.rePebble.com/106d7f75a81a4e8592ad7f51> |
+| SOLARI | <https://apps.rePebble.com/59d86b580d9b4071a1bf0c1f> |
+| IVOIRE | <https://apps.rePebble.com/bdffc25bf0694de68ee6015c> |
+| APOLLO | <https://apps.rePebble.com/80bfb32c92eb4f86a91c941c> |
+| QUAI | <https://apps.rePebble.com/0a3d20f9c1574bc59142da32> |
+| CONCOURSE | <https://apps.rePebble.com/a3ff5397d9184a778cded553> |
+| LUMEN | <https://apps.rePebble.com/14d05b5cd0234f1d8e804887> |
 
 ## Colour-coded steps
 

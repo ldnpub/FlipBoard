@@ -10,3 +10,6 @@ package-lock.json
 install-howto.html
 design_handoff_pebble_watchfaces/reference/airport-board-reference.jpg
 design_handoff_pebble_watchfaces/reference/airport-board-reference-LICENSE.txt
+
+# platform-prefixed publish screenshots (generated copies)
+screenshots/emery_*.png

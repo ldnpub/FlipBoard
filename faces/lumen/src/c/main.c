@@ -3,11 +3,15 @@
 // grid that sells the LED look. Font-free for the values (hand-drawn dots);
 // labels use the system Gothic font.
 //
-// Phone settings (Clay): language (9), daily step goal, and grid contrast.
-//   - 24h HH:MM, steady colon (NEVER blinks), minute-resolution redraws only.
+// Phone settings (Clay): language (9), daily step goal, grid contrast, date
+// format, year display, and the wrist-shake action.
+//   - HH:MM (12/24h, default = system), steady colon (NEVER blinks), minute-res.
 //   - Steps drive a red -> amber -> green ramp toward the (configurable) goal.
 //   - Grid contrast: FULL / FAINT / OFF, set from the phone or kept default.
-//   - Language also cycles on a wrist shake; all settings persist.
+//   - Date format auto-follows the language (or manual); year off / 26 / 2026.
+//   - Wrist shake (off by default): replay flip, backlight, steps-to-goal,
+//     random destination, or toggle 12/24h. Language has its OWN config menu.
+//   - All settings persist.
 
 #include <pebble.h>
 
@@ -344,6 +348,7 @@ static void tap_handler(AccelAxisType axis, int32_t direction) {
       s_ov_col = step_color(s_steps, s_goal);
       s_overlay = 1;
       app_timer_register(OVERLAY_MS, overlay_clear, NULL);
+      layer_mark_dirty(s_layer);
       break;
     }
     case 4:                                              // random destination
@@ -354,6 +359,7 @@ static void tap_handler(AccelAxisType axis, int32_t direction) {
       s_ov_col = GColorWhite;
       s_overlay = 1;
       app_timer_register(OVERLAY_MS, overlay_clear, NULL);
+      layer_mark_dirty(s_layer);
       break;
     case 5:                                              // toggle 12/24h
       s_time24h = !s_time24h;

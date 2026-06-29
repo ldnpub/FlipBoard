@@ -84,12 +84,12 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   GFont g14  = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   GFont g14b = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD);
 
-  // Status line: "> SYS-OK" (green) + "24H" (dim) — design v04-status
+  // Status line: "> SYS-OK" (green) + "24H"/"12H" (dim, follows the clock) — design v04-status
   graphics_context_set_text_color(ctx, COL_GREEN);
   graphics_draw_text(ctx, "> SYS-OK", g14b, GRect(left + PAD, top + 2, w - 2*PAD, 16),
                      GTextOverflowModeFill, GTextAlignmentLeft, NULL);
   graphics_context_set_text_color(ctx, COL_DIM);
-  graphics_draw_text(ctx, "24H", g14, GRect(left + PAD, top + 2, 122, 16),
+  graphics_draw_text(ctx, st->time_24h ? "24H" : "12H", g14, GRect(left + PAD, top + 2, 122, 16),
                      GTextOverflowModeFill, GTextAlignmentRight, NULL);
   // blinking cursor block at the right edge (design v04-cur)
   graphics_context_set_fill_color(ctx, COL_GREEN);

@@ -66,7 +66,9 @@
     },
     "messageKeys": [
       "LANG",
-      "STEP_GOAL"
+      "STEP_GOAL",
+      "DATE_FMT",
+      "SHAKE_ACT"
     ]
   }
 }

@@ -77,11 +77,11 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   graphics_fill_rect(ctx, area, 0, GCornerNone);
 
   char hh[4], mm[4], steps[16], date[12], batt[8];
-  snprintf(hh,    sizeof hh,    "%02d", now->tm_hour);
+  snprintf(hh,    sizeof hh,    "%02d", flip_disp_hour(now->tm_hour, st->time_24h));
   snprintf(mm,    sizeof mm,    "%02d", now->tm_min);
   int s = st->steps; if (s < 0 || s > 99999) s = 0;
   snprintf(steps, sizeof steps, "%d", s);
-  snprintf(date,  sizeof date,  "%02d/%02d", now->tm_mday, now->tm_mon + 1);
+  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang);
   snprintf(batt,  sizeof batt,  "%d", st->battery);
 
   GFont g14b = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD);
@@ -112,7 +112,7 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
     time_t pt = time(NULL) - 60;
     struct tm *pv = localtime(&pt);
     char ph[4], pm[4];
-    snprintf(ph, sizeof ph, "%02d", pv->tm_hour);
+    snprintf(ph, sizeof ph, "%02d", flip_disp_hour(pv->tm_hour, st->time_24h));
     snprintf(pm, sizeof pm, "%02d", pv->tm_min);
     ctile(ctx, GRect(tile1x, tileY, tileW, tileH), hh, ph, st->anim);
     ctile(ctx, GRect(tile2x, tileY, tileW, tileH), mm, pm, st->anim);

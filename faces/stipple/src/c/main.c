@@ -73,11 +73,11 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   (void)bot;
 
   char hh[4], mm[4], steps[16], date[24], batt[16];
-  snprintf(hh, sizeof hh, "%02d", now->tm_hour);
+  snprintf(hh, sizeof hh, "%02d", flip_disp_hour(now->tm_hour, st->time_24h));
   snprintf(mm, sizeof mm, "%02d", now->tm_min);
   int s = st->steps; if (s < 0 || s > 99999) s = 0;
   snprintf(steps, sizeof steps, "%d", s);
-  snprintf(date, sizeof date, "%02d/%02d", now->tm_mday, now->tm_mon + 1);
+  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang);
   snprintf(batt, sizeof batt, "%d%%", st->battery);
 
   // Measured from the design DOM (×0.667): steps y=11, hero y=58 h=72,
@@ -104,7 +104,7 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
     time_t pt = time(NULL) - 60;
     struct tm *pv = localtime(&pt);
     char prev[8];
-    snprintf(prev, sizeof prev, "%02d%02d", pv->tm_hour, pv->tm_min);
+    snprintf(prev, sizeof prev, "%02d%02d", flip_disp_hour(pv->tm_hour, st->time_24h), pv->tm_min);
     char cur[8];
     snprintf(cur, sizeof cur, "%s%s", hh, mm);
     const int xs[4] = {hh_x, hh_x + GCW, mm_x, mm_x + GCW};

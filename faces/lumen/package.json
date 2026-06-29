@@ -18,7 +18,9 @@
     "messageKeys": [
       "LANG",
       "STEP_GOAL",
-      "GRID"
+      "GRID",
+      "DATE_FMT",
+      "SHAKE_ACT"
     ],
     "targetPlatforms": [
       "emery"

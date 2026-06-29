@@ -23,6 +23,9 @@
 #define PERSIST_LANG 1
 #define PERSIST_GOAL 2
 #define PERSIST_GRID 3
+#define PERSIST_DATEFMT 4
+#define PERSIST_SHAKE   5
+#define PERSIST_T24     6
 
 // Latin-script languages (system font renders the labels, so no dot-matrix
 // glyphs are needed). Keep FR=0 / EN=1 stable for back-compat with persist.
@@ -36,11 +39,16 @@ enum { LANG_FR = 0, LANG_EN = 1, LANG_DE = 2, LANG_ES = 3, LANG_IT = 4,
 // so the slider stays smooth even at small pitches where dot radius is coarse.
 #define GRID_DEFAULT 45
 
+// How long the transient shake overlay (steps-left / destination) stays up.
+#define OVERLAY_MS 3500
+
 // messageKeys (declared in package.json) are emitted as runtime uint32_t
 // symbols; the auto header doesn't extern them, so declare them here.
 extern uint32_t MESSAGE_KEY_LANG;
 extern uint32_t MESSAGE_KEY_STEP_GOAL;
 extern uint32_t MESSAGE_KEY_GRID;
+extern uint32_t MESSAGE_KEY_DATE_FMT;
+extern uint32_t MESSAGE_KEY_SHAKE_ACT;
 
 static Window *s_window;
 static Layer  *s_layer;
@@ -50,6 +58,40 @@ static int s_battery = 0;
 static int s_lang    = LANG_FR;
 static int s_goal    = STEP_GOAL_DEFAULT;
 static int s_grid    = GRID_DEFAULT;   // ghost-grid intensity %, phone-tunable
+static int s_datefmt = 0;              // 0=AUTO,1=DD/MM,2=MM/DD,3=DD.MM,4=ISO
+static int s_shake   = 0;              // 0=Off,1=Flip,2=Light,3=Steps,4=Dest,5=T24
+static bool s_time24h;                 // 12/24h; default = system, toggled by shake
+
+// Transient shake overlay (steps-left / random destination). Drawn full-bleed in
+// SYSTEM fonts (not dm_draw) so it isn't limited to DM_FONT's numeric glyph set.
+static int    s_overlay = 0;
+static char   s_ov_main[16];
+static char   s_ov_sub[16];
+static GColor s_ov_col;
+
+// Departure-board easter egg: a shake can flash a random destination code.
+static const char *DEST[] = {
+  "CDG","JFK","LHR","HND","SFO","DXB","SIN","AMS","FRA","NRT",
+  "LAX","HKG","GVA","BCN","FCO","SYD","YUL","GRU","ICN","MAD" };
+
+// ─────────────────────── date format + 12/24h helpers ──────────────────────
+// date format select/persist values: 0=AUTO(by language),1=DD/MM,2=MM/DD,3=DD.MM,4=ISO
+static int lumen_lang_datefmt(int lang){
+  switch(lang){ case 1: return 2;            /* EN -> MM/DD */
+                case 2: case 5: case 7: return 3; /* DE,NL,PL -> DD.MM */
+                case 8: return 4;            /* SV -> ISO */
+                default: return 1; }         /* FR,ES,IT,PT -> DD/MM */
+}
+static void lumen_format_date(char*buf,size_t n,struct tm*now,int fmt,int lang){
+  if(fmt==0) fmt=lumen_lang_datefmt(lang);
+  int d=now->tm_mday,m=now->tm_mon+1,y=now->tm_year+1900;
+  switch(fmt){ case 2: snprintf(buf,n,"%02d/%02d",m,d); break;
+               case 3: snprintf(buf,n,"%02d.%02d",d,m); break;
+               case 4: snprintf(buf,n,"%04d-%02d-%02d",y,m,d); break;
+               default: snprintf(buf,n,"%02d/%02d",d,m); break; }
+}
+// Hour to display, honouring the 12/24h setting (no AM/PM — space is tight).
+static int lumen_disp_hour(int h24,bool h24flag){ if(h24flag) return h24; int h=h24%12; return h?h:12; }
 
 // ─────────────────────────── 5x7 dot-matrix font ───────────────────────────
 // Ported verbatim from design_handoff/dotmatrix.jsx DM_FONT. Each glyph is 7
@@ -184,8 +226,9 @@ static void layer_update(Layer *layer, GContext *ctx) {
   time_t now = time(NULL);
   struct tm *tm = localtime(&now);
   char timebuf[24], datebuf[24], stepbuf[16], battbuf[16];
-  snprintf(timebuf, sizeof(timebuf), "%02d:%02d", tm->tm_hour, tm->tm_min); // 24h, steady colon
-  snprintf(datebuf, sizeof(datebuf), "%02d/%02d", tm->tm_mday, tm->tm_mon + 1);
+  snprintf(timebuf, sizeof(timebuf), "%02d:%02d",
+           lumen_disp_hour(tm->tm_hour, s_time24h), tm->tm_min); // steady colon
+  lumen_format_date(datebuf, sizeof(datebuf), tm, s_datefmt, s_lang);
   snprintf(stepbuf, sizeof(stepbuf), "%d", s_steps);
   snprintf(battbuf, sizeof(battbuf), "%d%%", s_battery);
 
@@ -217,6 +260,30 @@ static void layer_update(Layer *layer, GContext *ctx) {
   // BATTERY (bottom) — white.
   draw_label(ctx, lbl_batt(), y_batt + LBL_DY, 16);
   draw_value_right(ctx, battbuf, y_batt, P_SEC, WHITE, GHOST);
+
+  // Transient shake overlay: full-bleed flash in SYSTEM fonts (NOT dm_draw, so
+  // it isn't limited to DM_FONT's numeric glyphs) — auto-cleared by overlay_clear.
+  if (s_overlay) {
+    GRect b = layer_get_bounds(layer);
+    graphics_context_set_fill_color(ctx, GColorBlack);
+    graphics_fill_rect(ctx, b, 0, GCornerNone);
+    int cy = b.origin.y + b.size.h / 2;
+    graphics_context_set_text_color(ctx, s_ov_col);
+    graphics_draw_text(ctx, s_ov_main, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD),
+      GRect(b.origin.x, cy - 44, b.size.w, 50),
+      GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+    graphics_context_set_text_color(ctx, GColorLightGray);
+    graphics_draw_text(ctx, s_ov_sub, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+      GRect(b.origin.x, cy + 8, b.size.w, 24),
+      GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+  }
+}
+
+// Auto-clears the transient shake overlay after FLIP_OVERLAY_MS.
+static void overlay_clear(void *d) {
+  (void)d;
+  s_overlay = 0;
+  if (s_layer) layer_mark_dirty(s_layer);
 }
 
 // ──────────────────────────── service handlers ─────────────────────────────
@@ -236,11 +303,44 @@ static void health_handler(HealthEventType event, void *ctx) {
   }
 }
 
-// Shake cycles to the next language (the phone sets it directly too).
+// Shake action is configurable from the phone (default OFF). Language cycling is
+// intentionally NOT here — it has its own config menu.
 static void tap_handler(AccelAxisType axis, int32_t direction) {
-  s_lang = (s_lang + 1) % LANG_COUNT;
-  persist_write_int(PERSIST_LANG, s_lang);
-  layer_mark_dirty(s_layer);
+  (void)axis; (void)direction;
+  switch (s_shake) {
+    case 1:                                              // replay flip (redraw)
+      layer_mark_dirty(s_layer);
+      break;
+    case 2:                                              // backlight pulse
+      light_enable_interaction();
+      return;                                            // no redraw needed
+    case 3: {                                            // steps remaining flash
+      int rem = s_goal - s_steps; if (rem < 0) rem = 0;
+      snprintf(s_ov_main, sizeof(s_ov_main), "%d", rem);
+      strncpy(s_ov_sub, lbl_steps(), sizeof(s_ov_sub) - 1);
+      s_ov_sub[sizeof(s_ov_sub) - 1] = 0;
+      s_ov_col = step_color(s_steps, s_goal);
+      s_overlay = 1;
+      app_timer_register(OVERLAY_MS, overlay_clear, NULL);
+      break;
+    }
+    case 4:                                              // random destination
+      strncpy(s_ov_main, DEST[rand() % 20], sizeof(s_ov_main) - 1);
+      s_ov_main[sizeof(s_ov_main) - 1] = 0;
+      strncpy(s_ov_sub, "DEPARTURE", sizeof(s_ov_sub) - 1);
+      s_ov_sub[sizeof(s_ov_sub) - 1] = 0;
+      s_ov_col = GColorWhite;
+      s_overlay = 1;
+      app_timer_register(OVERLAY_MS, overlay_clear, NULL);
+      break;
+    case 5:                                              // toggle 12/24h
+      s_time24h = !s_time24h;
+      persist_write_bool(PERSIST_T24, s_time24h);
+      layer_mark_dirty(s_layer);
+      break;
+    default:                                             // 0 = Off
+      return;
+  }
 }
 
 // Settings pushed from the phone (Clay). Selects arrive as numeric strings,
@@ -262,6 +362,16 @@ static void inbox_received(DictionaryIterator *it, void *ctx) {
     int v = (gr->type == TUPLE_CSTRING) ? atoi(gr->value->cstring) : (int)gr->value->int32;
     if (v >= 0 && v <= 100) { s_grid = v; persist_write_int(PERSIST_GRID, v); dirty = true; }
   }
+  Tuple *df = dict_find(it, MESSAGE_KEY_DATE_FMT);
+  if (df) {
+    int v = (df->type == TUPLE_CSTRING) ? atoi(df->value->cstring) : (int)df->value->int32;
+    if (v >= 0 && v <= 4) { s_datefmt = v; persist_write_int(PERSIST_DATEFMT, v); dirty = true; }
+  }
+  Tuple *sa = dict_find(it, MESSAGE_KEY_SHAKE_ACT);
+  if (sa) {
+    int v = (sa->type == TUPLE_CSTRING) ? atoi(sa->value->cstring) : (int)sa->value->int32;
+    if (v >= 0 && v <= 5) { s_shake = v; persist_write_int(PERSIST_SHAKE, v); dirty = true; }
+  }
   if (dirty) layer_mark_dirty(s_layer);
 }
 
@@ -282,6 +392,11 @@ static void init(void) {
   if (persist_exists(PERSIST_LANG)) s_lang = persist_read_int(PERSIST_LANG);
   if (persist_exists(PERSIST_GOAL)) s_goal = persist_read_int(PERSIST_GOAL);
   if (persist_exists(PERSIST_GRID)) s_grid = persist_read_int(PERSIST_GRID);
+  s_datefmt = persist_exists(PERSIST_DATEFMT) ? persist_read_int(PERSIST_DATEFMT) : 0;
+  s_shake   = persist_exists(PERSIST_SHAKE)   ? persist_read_int(PERSIST_SHAKE)   : 0;
+  s_time24h = persist_exists(PERSIST_T24)     ? persist_read_bool(PERSIST_T24)    : clock_is_24h_style();
+
+  srand((unsigned)time(NULL));
 
   s_battery = battery_state_service_peek().charge_percent;
 

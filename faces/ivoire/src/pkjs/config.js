@@ -41,8 +41,7 @@ module.exports = [
       {
         type: 'text',
         defaultValue:
-          'Labels (STEPS, DATE, BATTERY) follow the language you pick here. You ' +
-          'can also shake your wrist to cycle to the next language.'
+          'Labels (STEPS, DATE, BATTERY) follow the language you pick here.'
       },
       {
         type: 'select',
@@ -59,6 +58,51 @@ module.exports = [
           { label: 'Portugues',   value: '6' },
           { label: 'Polski',      value: '7' },
           { label: 'Svenska',     value: '8' }
+        ]
+      }
+    ]
+  },
+  {
+    type: 'section',
+    items: [
+      { type: 'heading', defaultValue: 'Date format' },
+      {
+        type: 'select',
+        messageKey: 'DATE_FMT',
+        defaultValue: '0',
+        label: 'Date format',
+        options: [
+          { label: 'Auto (with language)', value: '0' },
+          { label: 'DD/MM (29/06)',        value: '1' },
+          { label: 'MM/DD (06/29)',        value: '2' },
+          { label: 'DD.MM (29.06)',        value: '3' },
+          { label: 'YYYY-MM-DD (ISO)',     value: '4' }
+        ]
+      }
+    ]
+  },
+  {
+    type: 'section',
+    items: [
+      { type: 'heading', defaultValue: 'Shake' },
+      {
+        type: 'text',
+        defaultValue:
+          'Choose what a wrist shake does. Off by default so it never triggers ' +
+          'by accident while you walk.'
+      },
+      {
+        type: 'select',
+        messageKey: 'SHAKE_ACT',
+        defaultValue: '0',
+        label: 'Shake action',
+        options: [
+          { label: 'Off',                 value: '0' },
+          { label: 'Replay flip',         value: '1' },
+          { label: 'Backlight',           value: '2' },
+          { label: 'Steps to goal',       value: '3' },
+          { label: 'Random destination',  value: '4' },
+          { label: 'Toggle 12h / 24h',    value: '5' }
         ]
       }
     ]

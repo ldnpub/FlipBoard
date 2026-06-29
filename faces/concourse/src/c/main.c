@@ -114,10 +114,10 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   graphics_fill_rect(ctx, area, 0, GCornerNone);
 
   char hhmm[8], steps[16], date[24], batt[16], pct[8];
-  snprintf(hhmm, sizeof hhmm, "%02d:%02d", now->tm_hour, now->tm_min);
+  snprintf(hhmm, sizeof hhmm, "%02d:%02d", flip_disp_hour(now->tm_hour, st->time_24h), now->tm_min);
   int s = st->steps; if (s < 0 || s > 99999) s = 0;
   snprintf(steps, sizeof steps, "%05d", s);
-  snprintf(date, sizeof date, "%02d-%02d", now->tm_mday, now->tm_mon + 1);
+  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang);
   snprintf(batt, sizeof batt, "%d", st->battery);
   snprintf(pct, sizeof pct, "%d%%", flip_progress_pct(s, st->step_goal));
 
@@ -147,7 +147,7 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
     time_t pt = time(NULL) - 60;
     struct tm *pv = localtime(&pt);
     char prev[8];
-    snprintf(prev, sizeof prev, "%02d:%02d", pv->tm_hour, pv->tm_min);
+    snprintf(prev, sizeof prev, "%02d:%02d", flip_disp_hour(pv->tm_hour, st->time_24h), pv->tm_min);
     int vx = left + 6 + 40, vy = y0 + 1*rh + 4;
     for (int i = 0; i < 5; i++) {
       GRect r = GRect(vx + i * WCW, vy, WCW, WCH);

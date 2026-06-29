@@ -1,25 +1,31 @@
-# FlipBoard IVOIRE — Pebble Store listing
+# FlipBoard APOLLO — Pebble Store listing
 
 ## Tagline
-A split-flap departure board for your wrist — in ivory.
+Your day as a mission-control telemetry readout.
 
 ## Description (English — store default)
-FlipBoard IVOIRE turns your Pebble Time 2 into the airport split-flap board you
-wish you lived next to. Two warm ivory tiles hold the hour and the minutes, and
-on every minute they fold over with a clean split-flap snap — the same satisfying
-flip you remember from train stations and terminals.
+FlipBoard APOLLO turns your Pebble Time 2 into a flight-console terminal. Rendered
+in the VT323 monospace terminal font, it reads like a green-screen readout straight
+out of mission control — telemetry for the one flight that matters, your day. On
+every minute the digits still fold over with the same satisfying split-flap snap,
+like a status board updating on the wall.
 
-Underneath the clock, your day is laid out at a glance:
+Underneath the clock, your day reports its flight status:
 
-• STEPS, colour-coded against your goal. The number starts warm red when you're
-  near zero, warms through amber and yellow across the day, and turns green as you
-  close in on your target — so a single look tells you how you're tracking.
-• DATE and BATTERY, in clean type along the bottom.
+• A STATUS LINE up top — "> SYS-OK   24H" with a battery pip, the console
+  reassuring you everything is nominal.
+• A "PAS / 10000" goal readout, with the big step count on the left like a live
+  telemetry channel.
+• A PROGRESS BAR that fills horizontally toward your goal, colour-ramped from warm
+  red when you're near zero, through amber and yellow across the day, to green as
+  you close in on your target — so a single glance reads the mission like a console
+  operator.
+• The big HH:MM clock under the bar, then DATE and BATTERY in the footer.
 
 Make it yours from the Pebble phone app:
 
 • Daily step goal — the colour ramp follows whatever target you set.
-• Language — IVOIRE speaks Français, English, Deutsch, Español, Italiano,
+• Language — APOLLO speaks Français, English, Deutsch, Español, Italiano,
   Nederlands, Português, Polski and Svenska. Labels and weekdays follow along.
 • Date format — Auto (it matches your language: DD/MM, MM/DD, DD.MM or ISO), or
   pick one by hand.
@@ -34,17 +40,23 @@ custom digits and an e-paper-calibrated palette so it looks crisp on the real
 panel — not just in the emulator.
 
 ## Description (Français)
-FlipBoard IVOIRE transforme votre Pebble Time 2 en tableau d'affichage à volets,
-version ivoire. Deux tuiles crème portent l'heure et les minutes, et à chaque
-minute elles se replient d'un coup net — le claquement du tableau de gare ou
-d'aéroport, à votre poignet.
+FlipBoard APOLLO transforme votre Pebble Time 2 en console de contrôle de vol.
+Dans la police monospace VT323, elle se lit comme un terminal à écran vert tout
+droit sorti du centre de commande — la télémétrie du seul vol qui compte, votre
+journée. À chaque minute, les chiffres se replient toujours d'un coup net, comme un
+tableau de statut qui se met à jour au mur.
 
-Sous l'horloge, votre journée d'un coup d'œil :
+Sous l'horloge, votre journée affiche son statut de vol :
 
-• Les PAS, dont la couleur suit votre objectif : rouge près de zéro, puis ambre et
-  jaune dans la journée, et vert à l'approche du but. Un regard suffit pour savoir
-  où vous en êtes.
-• La DATE et la BATTERIE, en typographie nette en bas.
+• Une LIGNE DE STATUT en haut — « > SYS-OK   24H » avec une pastille de batterie,
+  la console qui confirme que tout est nominal.
+• Un affichage d'objectif « PAS / 10000 », avec le grand compteur de pas à gauche
+  comme un canal de télémétrie en direct.
+• Une BARRE DE PROGRESSION qui se remplit horizontalement vers votre objectif, dont
+  la couleur suit votre but : rouge près de zéro, puis ambre et jaune dans la
+  journée, et vert à l'approche du but. Un regard suffit pour lire la mission comme
+  un opérateur en salle de contrôle.
+• Le grand HH:MM sous la barre, puis la DATE et la BATTERIE en bas.
 
 Personnalisable depuis l'application téléphone :
 

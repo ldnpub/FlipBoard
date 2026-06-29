@@ -1,13 +1,16 @@
-# FlipBoard IVOIRE — Pebble Store listing
+# FlipBoard SOLARI — Pebble Store listing
 
 ## Tagline
-A split-flap departure board for your wrist — in ivory.
+A mechanical Solari split-flap board for your wrist — every glyph its own flap.
 
 ## Description (English — store default)
-FlipBoard IVOIRE turns your Pebble Time 2 into the airport split-flap board you
-wish you lived next to. Two warm ivory tiles hold the hour and the minutes, and
-on every minute they fold over with a clean split-flap snap — the same satisfying
-flip you remember from train stations and terminals.
+FlipBoard SOLARI rebuilds the classic Italian station board — the Solari di Udine
+that ruled train concourses and airport halls — on your Pebble Time 2. Every single
+character sits on its own little flap tile, a visible fold seam running straight
+across the middle, so the whole face is a grid of flaps rather than two big slabs.
+Drawn in a chunky pixel Silkscreen font, it reads like the real monospaced
+mechanical board. On every minute the digits that change tumble over one by one
+with that unmistakable concourse clatter — only the flaps that need to move, move.
 
 Underneath the clock, your day is laid out at a glance:
 
@@ -19,25 +22,29 @@ Underneath the clock, your day is laid out at a glance:
 Make it yours from the Pebble phone app:
 
 • Daily step goal — the colour ramp follows whatever target you set.
-• Language — IVOIRE speaks Français, English, Deutsch, Español, Italiano,
+• Language — SOLARI speaks Français, English, Deutsch, Español, Italiano,
   Nederlands, Português, Polski and Svenska. Labels and weekdays follow along.
 • Date format — Auto (it matches your language: DD/MM, MM/DD, DD.MM or ISO), or
   pick one by hand.
 • Year — hide it, or show it as "26" or "2026" when there's room.
-• Wrist shake — off by default, or assign one action: replay the flip animation,
-  trigger the backlight, flash your steps-to-goal, surface a random destination
-  code (a little easter egg), or toggle 12h/24h.
+• Wrist shake — off by default, or assign one action: replay the flip animation
+  (the whole board re-tumbles, flap by flap), trigger the backlight, flash your
+  steps-to-goal, surface a random destination code (a little easter egg), or
+  toggle 12h/24h.
 • 12h / 24h — follows your watch by default; the shake toggle can flip it on the fly.
 
-Designed for the Pebble Time 2 (Emery, 200×228) colour display, with anti-aliased
-custom digits and an e-paper-calibrated palette so it looks crisp on the real
-panel — not just in the emulator.
+Built for the Pebble Time 2 (Emery, 200×228) colour display, with a per-glyph flap
+grid, fold-seam shading and an e-paper-calibrated palette so the mechanical board
+reads crisp on the real panel — not just in the emulator.
 
 ## Description (Français)
-FlipBoard IVOIRE transforme votre Pebble Time 2 en tableau d'affichage à volets,
-version ivoire. Deux tuiles crème portent l'heure et les minutes, et à chaque
-minute elles se replient d'un coup net — le claquement du tableau de gare ou
-d'aéroport, à votre poignet.
+FlipBoard SOLARI reconstruit le tableau de gare à la italienne — le Solari di Udine
+qui régnait sur les halls des gares et aéroports — sur votre Pebble Time 2. Chaque
+caractère repose sur son propre petit volet, avec une pliure bien visible en plein
+milieu : le cadran tout entier est une grille de volets, pas deux grandes dalles.
+Tracé dans une grosse police pixel Silkscreen, il se lit comme le vrai tableau
+mécanique à chasse fixe. À chaque minute, les chiffres qui changent basculent un à
+un dans ce claquement de hall de gare — seuls les volets qui doivent bouger bougent.
 
 Sous l'horloge, votre journée d'un coup d'œil :
 
@@ -55,13 +62,13 @@ Personnalisable depuis l'application téléphone :
   à la main.
 • Année — masquée, ou affichée en « 26 » ou « 2026 » quand il y a la place.
 • Secousse du poignet — désactivée par défaut, ou une action au choix : rejouer
-  l'animation à volets, allumer le rétroéclairage, afficher les pas restants
-  jusqu'à l'objectif, faire surgir un code destination aléatoire (petit easter
-  egg), ou basculer 12h/24h.
+  l'animation à volets (tout le tableau rebascule, volet par volet), allumer le
+  rétroéclairage, afficher les pas restants jusqu'à l'objectif, faire surgir un
+  code destination aléatoire (petit easter egg), ou basculer 12h/24h.
 • 12h / 24h — suit la montre par défaut ; la secousse peut basculer à la volée.
 
-Conçue pour l'écran couleur du Pebble Time 2 (Emery, 200×228), chiffres
-anti-aliasés et palette calibrée pour le vrai panneau e-paper.
+Conçue pour l'écran couleur du Pebble Time 2 (Emery, 200×228) : grille de volets
+par caractère, ombrage de pliure et palette calibrée pour le vrai panneau e-paper.
 
 ## Source
 Open source — github.com/ldnpub/FlipBoard

@@ -42,7 +42,7 @@
           "type": "font",
           "name": "FONT_SILK_24",
           "file": "fonts/Silkscreen.ttf",
-          "characterRegex": "[0-9:/%]"
+          "characterRegex": "[0-9:/%.-]"
         }
       ]
     },
@@ -50,7 +50,8 @@
       "LANG",
       "STEP_GOAL",
       "DATE_FMT",
-      "SHAKE_ACT"
+      "SHAKE_ACT",
+      "YEAR_FMT"
     ]
   }
 }

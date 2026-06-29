@@ -81,7 +81,7 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   snprintf(mm,    sizeof mm,    "%02d", now->tm_min);
   int s = st->steps; if (s < 0 || s > 99999) s = 0;
   snprintf(steps, sizeof steps, "%d", s);
-  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang);
+  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang, st->year_fmt);
   snprintf(batt,  sizeof batt,  "%d", st->battery);
 
   GFont g14b = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD);

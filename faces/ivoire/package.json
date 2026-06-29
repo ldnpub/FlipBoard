@@ -19,7 +19,8 @@
       "LANG",
       "STEP_GOAL",
       "DATE_FMT",
-      "SHAKE_ACT"
+      "SHAKE_ACT",
+      "YEAR_FMT"
     ],
     "targetPlatforms": [
       "emery"
@@ -42,7 +43,7 @@
           "type": "font",
           "name": "FONT_OSWALD_28",
           "file": "fonts/Oswald-600.ttf",
-          "characterRegex": "[0-9/% ]"
+          "characterRegex": "[0-9/%. -]"
         },
         {
           "type": "bitmap",

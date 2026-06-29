@@ -19,6 +19,11 @@
 #define FLIP_PERSIST_DATEFMT 3
 #define FLIP_PERSIST_SHAKE   4
 #define FLIP_PERSIST_T24     5
+#define FLIP_PERSIST_YEAR    6
+
+// Year in the date: off, 2-digit (26) or 4-digit (2026). Shown only where the
+// chosen date format has room; tight faces can keep it off.
+enum { FLIP_YR_OFF = 0, FLIP_YR_2 = 1, FLIP_YR_4 = 2 };
 
 // Date display formats (Clay select value == enum). AUTO (0) follows the
 // selected language; the rest are manual overrides.
@@ -44,6 +49,7 @@ typedef struct {
   int step_goal;  // daily step goal — configurable from the phone, persisted
   int anim;       // split-flap frames remaining after a minute tick (FLIP_ANIM_FRAMES..0)
   int date_fmt;   // FLIP_DF_* — date display format (phone config)
+  int year_fmt;   // FLIP_YR_* — year in the date (off / 26 / 2026)
   int shake_act;  // FLIP_SH_* — what a wrist shake does (phone config)
   bool time_24h;  // 24h vs 12h time; default = system; toggled by shake
   // Transient shake overlay (steps-left / destination), drawn by the engine
@@ -139,14 +145,32 @@ static inline int flip_lang_date_fmt(int lang) {
 }
 // Numeric-only formats so every face (incl. 7-segment QUAI) can render them.
 // fmt FLIP_DF_AUTO resolves to the language's convention; otherwise it's manual.
-static inline void flip_format_date(char *buf, size_t n, struct tm *now, int fmt, int lang) {
+// year_fmt appends the year (FLIP_YR_2 -> /26, FLIP_YR_4 -> /2026). ISO always
+// carries a year (FLIP_YR_2 shortens it to YY).
+static inline void flip_format_date(char *buf, size_t n, struct tm *now,
+                                    int fmt, int lang, int year_fmt) {
   if (fmt == FLIP_DF_AUTO) fmt = flip_lang_date_fmt(lang);
-  int d = now->tm_mday, m = now->tm_mon + 1, y = now->tm_year + 1900;
+  int d = now->tm_mday, m = now->tm_mon + 1, y = now->tm_year + 1900, yy = y % 100;
   switch (fmt) {
-    case FLIP_DF_MDY: snprintf(buf, n, "%02d/%02d", m, d); break;
-    case FLIP_DF_DOT: snprintf(buf, n, "%02d.%02d", d, m); break;
-    case FLIP_DF_ISO: snprintf(buf, n, "%04d-%02d-%02d", y, m, d); break;
-    default:          snprintf(buf, n, "%02d/%02d", d, m); break;  // DMY
+    case FLIP_DF_ISO:
+      if (year_fmt == FLIP_YR_2) snprintf(buf, n, "%02d-%02d-%02d", yy, m, d);
+      else                       snprintf(buf, n, "%04d-%02d-%02d", y, m, d);
+      break;
+    case FLIP_DF_MDY:
+      if (year_fmt == FLIP_YR_4) snprintf(buf, n, "%02d/%02d/%04d", m, d, y);
+      else if (year_fmt == FLIP_YR_2) snprintf(buf, n, "%02d/%02d/%02d", m, d, yy);
+      else snprintf(buf, n, "%02d/%02d", m, d);
+      break;
+    case FLIP_DF_DOT:
+      if (year_fmt == FLIP_YR_4) snprintf(buf, n, "%02d.%02d.%04d", d, m, y);
+      else if (year_fmt == FLIP_YR_2) snprintf(buf, n, "%02d.%02d.%02d", d, m, yy);
+      else snprintf(buf, n, "%02d.%02d", d, m);
+      break;
+    default:  // DMY
+      if (year_fmt == FLIP_YR_4) snprintf(buf, n, "%02d/%02d/%04d", d, m, y);
+      else if (year_fmt == FLIP_YR_2) snprintf(buf, n, "%02d/%02d/%02d", d, m, yy);
+      else snprintf(buf, n, "%02d/%02d", d, m);
+      break;
   }
 }
 // Hour to display, honouring the 12/24h setting (no AM/PM — space is tight).
@@ -282,6 +306,7 @@ static void s_flip_tap(AccelAxisType axis, int32_t direction) {
 extern uint32_t MESSAGE_KEY_LANG;
 extern uint32_t MESSAGE_KEY_STEP_GOAL;
 extern uint32_t MESSAGE_KEY_DATE_FMT;
+extern uint32_t MESSAGE_KEY_YEAR_FMT;
 extern uint32_t MESSAGE_KEY_SHAKE_ACT;
 
 // Settings pushed from the phone (Clay). Clay sends a Select as a numeric
@@ -304,6 +329,11 @@ static void s_flip_inbox(DictionaryIterator *it, void *ctx) {
     int v = (df->type == TUPLE_CSTRING) ? atoi(df->value->cstring) : (int)df->value->int32;
     if (v >= 0 && v <= FLIP_DF_ISO) { s_flip.date_fmt = v; persist_write_int(FLIP_PERSIST_DATEFMT, v); dirty = true; }
   }
+  Tuple *yf = dict_find(it, MESSAGE_KEY_YEAR_FMT);
+  if (yf) {
+    int v = (yf->type == TUPLE_CSTRING) ? atoi(yf->value->cstring) : (int)yf->value->int32;
+    if (v >= 0 && v <= FLIP_YR_4) { s_flip.year_fmt = v; persist_write_int(FLIP_PERSIST_YEAR, v); dirty = true; }
+  }
   Tuple *sa = dict_find(it, MESSAGE_KEY_SHAKE_ACT);
   if (sa) {
     int v = (sa->type == TUPLE_CSTRING) ? atoi(sa->value->cstring) : (int)sa->value->int32;
@@ -325,6 +355,7 @@ static void flip_run(FlipRender render, GColor bg, FlipSetup setup) {
   s_flip.lang = persist_exists(FLIP_PERSIST_LANG) ? persist_read_int(FLIP_PERSIST_LANG) : FLIP_FR;
   s_flip.step_goal = persist_exists(FLIP_PERSIST_GOAL) ? persist_read_int(FLIP_PERSIST_GOAL) : FLIP_STEP_GOAL_DEFAULT;
   s_flip.date_fmt = persist_exists(FLIP_PERSIST_DATEFMT) ? persist_read_int(FLIP_PERSIST_DATEFMT) : FLIP_DF_AUTO;
+  s_flip.year_fmt = persist_exists(FLIP_PERSIST_YEAR) ? persist_read_int(FLIP_PERSIST_YEAR) : FLIP_YR_OFF;
   s_flip.shake_act = persist_exists(FLIP_PERSIST_SHAKE) ? persist_read_int(FLIP_PERSIST_SHAKE) : FLIP_SH_OFF;
   s_flip.time_24h = persist_exists(FLIP_PERSIST_T24) ? persist_read_bool(FLIP_PERSIST_T24) : clock_is_24h_style();
   s_flip.bg = bg;

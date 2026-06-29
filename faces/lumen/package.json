@@ -20,7 +20,8 @@
       "STEP_GOAL",
       "GRID",
       "DATE_FMT",
-      "SHAKE_ACT"
+      "SHAKE_ACT",
+      "YEAR_FMT"
     ],
     "targetPlatforms": [
       "emery"

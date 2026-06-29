@@ -78,6 +78,17 @@ module.exports = [
           { label: 'DD.MM (29.06)',        value: '3' },
           { label: 'YYYY-MM-DD (ISO)',     value: '4' }
         ]
+      },
+      {
+        type: 'select',
+        messageKey: 'YEAR_FMT',
+        defaultValue: '0',
+        label: 'Show year',
+        options: [
+          { label: 'Off',            value: '0' },
+          { label: '2-digit (26)',   value: '1' },
+          { label: '4-digit (2026)', value: '2' }
+        ]
       }
     ]
   },

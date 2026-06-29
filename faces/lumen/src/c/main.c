@@ -26,6 +26,7 @@
 #define PERSIST_DATEFMT 4
 #define PERSIST_SHAKE   5
 #define PERSIST_T24     6
+#define PERSIST_YEAR    7
 
 // Latin-script languages (system font renders the labels, so no dot-matrix
 // glyphs are needed). Keep FR=0 / EN=1 stable for back-compat with persist.
@@ -49,6 +50,7 @@ extern uint32_t MESSAGE_KEY_STEP_GOAL;
 extern uint32_t MESSAGE_KEY_GRID;
 extern uint32_t MESSAGE_KEY_DATE_FMT;
 extern uint32_t MESSAGE_KEY_SHAKE_ACT;
+extern uint32_t MESSAGE_KEY_YEAR_FMT;
 
 static Window *s_window;
 static Layer  *s_layer;
@@ -59,6 +61,7 @@ static int s_lang    = LANG_FR;
 static int s_goal    = STEP_GOAL_DEFAULT;
 static int s_grid    = GRID_DEFAULT;   // ghost-grid intensity %, phone-tunable
 static int s_datefmt = 0;              // 0=AUTO,1=DD/MM,2=MM/DD,3=DD.MM,4=ISO
+static int s_yearfmt = 0;              // 0=off,1=2-digit,2=4-digit
 static int s_shake   = 0;              // 0=Off,1=Flip,2=Light,3=Steps,4=Dest,5=T24
 static bool s_time24h;                 // 12/24h; default = system, toggled by shake
 
@@ -82,13 +85,31 @@ static int lumen_lang_datefmt(int lang){
                 case 8: return 4;            /* SV -> ISO */
                 default: return 1; }         /* FR,ES,IT,PT -> DD/MM */
 }
-static void lumen_format_date(char*buf,size_t n,struct tm*now,int fmt,int lang){
+// year_fmt: 0=off, 1=2-digit, 2=4-digit. Appended per format convention.
+static void lumen_format_date(char*buf,size_t n,struct tm*now,int fmt,int lang,int year_fmt){
   if(fmt==0) fmt=lumen_lang_datefmt(lang);
-  int d=now->tm_mday,m=now->tm_mon+1,y=now->tm_year+1900;
-  switch(fmt){ case 2: snprintf(buf,n,"%02d/%02d",m,d); break;
-               case 3: snprintf(buf,n,"%02d.%02d",d,m); break;
-               case 4: snprintf(buf,n,"%04d-%02d-%02d",y,m,d); break;
-               default: snprintf(buf,n,"%02d/%02d",d,m); break; }
+  int d=now->tm_mday,m=now->tm_mon+1,y=now->tm_year+1900,yy=y%100;
+  switch(fmt){
+    case 2: // MDY
+      if(year_fmt==1)      snprintf(buf,n,"%02d/%02d/%02d",m,d,yy);
+      else if(year_fmt==2) snprintf(buf,n,"%02d/%02d/%04d",m,d,y);
+      else                 snprintf(buf,n,"%02d/%02d",m,d);
+      break;
+    case 3: // DOT (DMY with '.')
+      if(year_fmt==1)      snprintf(buf,n,"%02d.%02d.%02d",d,m,yy);
+      else if(year_fmt==2) snprintf(buf,n,"%02d.%02d.%04d",d,m,y);
+      else                 snprintf(buf,n,"%02d.%02d",d,m);
+      break;
+    case 4: // ISO
+      if(year_fmt==1)      snprintf(buf,n,"%02d-%02d-%02d",yy,m,d);
+      else                 snprintf(buf,n,"%04d-%02d-%02d",y,m,d);
+      break;
+    default: // DMY
+      if(year_fmt==1)      snprintf(buf,n,"%02d/%02d/%02d",d,m,yy);
+      else if(year_fmt==2) snprintf(buf,n,"%02d/%02d/%04d",d,m,y);
+      else                 snprintf(buf,n,"%02d/%02d",d,m);
+      break;
+  }
 }
 // Hour to display, honouring the 12/24h setting (no AM/PM — space is tight).
 static int lumen_disp_hour(int h24,bool h24flag){ if(h24flag) return h24; int h=h24%12; return h?h:12; }
@@ -112,6 +133,7 @@ static const DMGlyph DM_FONT[] = {
   {':', {0b00000,0b00000,0b00100,0b00000,0b00100,0b00000,0b00000}},
   {'/', {0b00001,0b00001,0b00010,0b00100,0b01000,0b10000,0b10000}},
   {'-', {0b00000,0b00000,0b00000,0b11111,0b00000,0b00000,0b00000}},
+  {'.', {0b00000,0b00000,0b00000,0b00000,0b00000,0b00000,0b00100}},
   {'%', {0b11001,0b11010,0b00100,0b01011,0b10011,0b00000,0b00000}},
   {' ', {0b00000,0b00000,0b00000,0b00000,0b00000,0b00000,0b00000}},
 };
@@ -228,7 +250,7 @@ static void layer_update(Layer *layer, GContext *ctx) {
   char timebuf[24], datebuf[24], stepbuf[16], battbuf[16];
   snprintf(timebuf, sizeof(timebuf), "%02d:%02d",
            lumen_disp_hour(tm->tm_hour, s_time24h), tm->tm_min); // steady colon
-  lumen_format_date(datebuf, sizeof(datebuf), tm, s_datefmt, s_lang);
+  lumen_format_date(datebuf, sizeof(datebuf), tm, s_datefmt, s_lang, s_yearfmt);
   snprintf(stepbuf, sizeof(stepbuf), "%d", s_steps);
   snprintf(battbuf, sizeof(battbuf), "%d%%", s_battery);
 
@@ -367,6 +389,11 @@ static void inbox_received(DictionaryIterator *it, void *ctx) {
     int v = (df->type == TUPLE_CSTRING) ? atoi(df->value->cstring) : (int)df->value->int32;
     if (v >= 0 && v <= 4) { s_datefmt = v; persist_write_int(PERSIST_DATEFMT, v); dirty = true; }
   }
+  Tuple *yf = dict_find(it, MESSAGE_KEY_YEAR_FMT);
+  if (yf) {
+    int v = (yf->type == TUPLE_CSTRING) ? atoi(yf->value->cstring) : (int)yf->value->int32;
+    if (v >= 0 && v <= 2) { s_yearfmt = v; persist_write_int(PERSIST_YEAR, v); dirty = true; }
+  }
   Tuple *sa = dict_find(it, MESSAGE_KEY_SHAKE_ACT);
   if (sa) {
     int v = (sa->type == TUPLE_CSTRING) ? atoi(sa->value->cstring) : (int)sa->value->int32;
@@ -393,6 +420,7 @@ static void init(void) {
   if (persist_exists(PERSIST_GOAL)) s_goal = persist_read_int(PERSIST_GOAL);
   if (persist_exists(PERSIST_GRID)) s_grid = persist_read_int(PERSIST_GRID);
   s_datefmt = persist_exists(PERSIST_DATEFMT) ? persist_read_int(PERSIST_DATEFMT) : 0;
+  s_yearfmt = persist_exists(PERSIST_YEAR)    ? persist_read_int(PERSIST_YEAR)    : 0;
   s_shake   = persist_exists(PERSIST_SHAKE)   ? persist_read_int(PERSIST_SHAKE)   : 0;
   s_time24h = persist_exists(PERSIST_T24)     ? persist_read_bool(PERSIST_T24)    : clock_is_24h_style();
 

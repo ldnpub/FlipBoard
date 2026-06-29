@@ -77,7 +77,7 @@ static void render(GContext *ctx, const FlipState *st, struct tm *now, GRect are
   snprintf(mm, sizeof mm, "%02d", now->tm_min);
   int s = st->steps; if (s < 0 || s > 99999) s = 0;
   snprintf(steps, sizeof steps, "%d", s);
-  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang);
+  flip_format_date(date, sizeof date, now, st->date_fmt, st->lang, st->year_fmt);
   snprintf(batt, sizeof batt, "%d%%", st->battery);
 
   // Measured from the design DOM (×0.667): steps y=11, hero y=58 h=72,

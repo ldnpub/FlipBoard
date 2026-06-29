@@ -68,7 +68,8 @@
       "LANG",
       "STEP_GOAL",
       "DATE_FMT",
-      "SHAKE_ACT"
+      "SHAKE_ACT",
+      "YEAR_FMT"
     ]
   }
 }
